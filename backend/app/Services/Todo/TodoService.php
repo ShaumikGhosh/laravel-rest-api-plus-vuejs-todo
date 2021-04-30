@@ -3,6 +3,7 @@
 namespace App\Services\Todo;
 use App\Models\Todo;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class TodoService implements TodoInterface {
 
@@ -20,7 +21,7 @@ class TodoService implements TodoInterface {
 
     public function getTodos ($user_id, $item_limit)
     {
-        $todos = $this->todo::orderby('id', 'desc')->paginate($item_limit)->where("user_id", $user_id)->all();
+        $todos = DB::table('todos')->where('user_id', $user_id)->orderBy('id', 'desc')->paginate($item_limit);
         if ( !$todos ){
             return response()->json(["error" => "We could not get the todo list for you!"], 400);
         }

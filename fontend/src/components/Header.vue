@@ -2,9 +2,21 @@
   <div>
     <b-navbar type="dark" variant="dark">
       <b-navbar-nav>
-        <b-nav-item><b-link :to="{path:'/'}" v-if="ifLogedIn === false">Home</b-link></b-nav-item>
-        <b-nav-item><b-link :to="{path:'register'}" v-if="ifLogedIn === false">Register</b-link></b-nav-item>
-        <b-nav-item><b-link :to="{path:'login'}" v-if="ifLogedIn === false">Login</b-link></b-nav-item>
+        <b-nav-item>
+          <router-link to="/" custom v-slot="{ navigate }" v-if="ifLogedIn === false">
+          <span @click="navigate" @keypress.enter="navigate" role="link">Home</span>
+        </router-link>
+        </b-nav-item>
+        <b-nav-item>
+          <router-link to="/register" custom v-slot="{ navigate }"  v-if="ifLogedIn === false">
+          <span @click="navigate" @keypress.enter="navigate" role="link">Register</span>
+        </router-link>
+        </b-nav-item>
+        <b-nav-item>
+          <router-link to="/login" custom v-slot="{ navigate }" v-if="ifLogedIn === false">
+          <span @click="navigate" @keypress.enter="navigate" role="link">Login</span>
+        </router-link>
+        </b-nav-item>
       </b-navbar-nav>
       <b-button variant="danger" style="float:right" size="sm" @click.prevent="onSubmitLogout" v-if="ifLogedIn === true">Logout</b-button>
     </b-navbar>

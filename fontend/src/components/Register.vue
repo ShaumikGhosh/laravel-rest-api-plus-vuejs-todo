@@ -42,7 +42,8 @@
           ></b-form-input>
           <p style="color:red">{{password_error}}</p>
         </b-form-group>
-        <b-button type="submit" variant="primary">Register now</b-button>
+        <b-button type="submit" variant="primary" :disabled="button_disabled">Register now</b-button>
+        <img src="https://icon-library.com/images/loading-icon-transparent-background/loading-icon-transparent-background-12.jpg" width="30" alt="" v-show="loader"/>
       </b-form>
     </div>
   </div>
@@ -66,6 +67,8 @@ export default {
       confirm_password: null,
       mail_error: null,
       password_error: null,
+      button_disabled: false,
+      loader: false,
     };
   },
   
@@ -76,6 +79,9 @@ export default {
         password: this.password,
         password_confirmation: this.confirm_password,
       };
+
+      this.button_disabled = true;
+      this.loader = true;
 
       const headers = {
         "Content-Type": "application/json;charset=UTF-8",
@@ -100,11 +106,13 @@ export default {
           {
             this.$router.push(`login?message=${response.data.message}`);
           }
-
-
+          this.button_disabled = false;
+          this.loader = false;
         })
         .catch((error) => {
           console.log(error);
+          this.button_disabled = false;
+          this.loader = false;
         });
     },
   },

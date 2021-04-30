@@ -57,7 +57,6 @@
 export default {
   name: "Table",
 
-
   data() {
     return {
       fields: ["id", "title", "description", "created_at", "actions"],
@@ -69,16 +68,21 @@ export default {
         Authorization: "Bearer " + localStorage.getItem("user_token"),
       },
       searchedFor: null,
-      items_load_limit: 10,
-      load_more_button: true,
-      show_loader: false
+      show_loader: false,
+      item_limit:11
     };
   },
 
   
   mounted() {
     this.getAllTodos();
-    this.scrollTrigger();
+    setInterval(()=>{
+      if(this.items.length > 10)
+      {
+        this.scrollTrigger();
+      }
+    }, 1000)
+    
   },
 
   methods: {
@@ -88,18 +92,25 @@ export default {
 
     getAllTodos() {
       this.$axios
-        .get(`${this.$base_path}/api/user/my-todos/${this.items_load_limit}`, { headers: this.headers })
+        .get(`${this.$base_path}/api/user/my-todos/${this.item_limit}`, { headers: this.headers })
         .then((response) => {
-          response.data.forEach((element) => {
-            let date = new Date(element.created_at);
-            this.items.push({
-              id:element.id,
-              title: element.title.substring(0, 20)+" ....",
-              description:element.description.substring(0, 20)+" ...",
-              created_at: `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+          if(response.data.data.length)
+          {
+            this.items.push(response.data.data)
+            response.data.data.forEach((element) => {
+              let date = new Date(element.created_at);
+              this.items.push({
+                id:element.id,
+                title: element.title.substring(0, 20)+" ....",
+                description:element.description.substring(0, 20)+" ...",
+                created_at: `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+              });
             });
-          });
-        });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     },
 
     OnClickDelete(id) {
@@ -159,7 +170,7 @@ export default {
             setTimeout(()=>{
               this.show_loader = false;
               this.items.length = 0;
-              this.items_load_limit += 10;
+              this.item_limit += 10;
               this.getAllTodos();
             }, 3000)
           }

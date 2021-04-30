@@ -2,7 +2,7 @@
 
 namespace App\Services\User;
 
-use App\Mail\Testmail;
+use App\Mail\TestMail;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -55,7 +55,7 @@ class UserService implements UserInterface {
         $target = base64_encode($data['email']);
         $details = [
             'title' => 'Mail from laravel+vue aplication',
-            'url' => "http://localhost:8080/login?verify_token=$code&&target=$target",
+            'url' => env('FRONTEND_URL')."/login?verify_token=$code&&target=$target",
         ];
         Mail::to($data['email'])->send(new TestMail($details));
         return response()->json(['message' => 'User successfully registered and a verification mail has been sent to you, email verification required before login. Thanks.', 'status'=>'success'],201);
